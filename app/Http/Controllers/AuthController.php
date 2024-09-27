@@ -21,8 +21,9 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): AuthResource|JsonResponse
     {
+        $data = $request->validated();
         try {
-            $result = $this->authService->registerUser($request->validated());
+            $result = $this->authService->registerUser($data);
 
             return new AuthResource($result);
         } catch (\Throwable $e) {
@@ -35,8 +36,9 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request): AuthResource|JsonResponse
     {
+        $data = $request->validated();
         try {
-            if (!$token = JWTAuth::attempt($request->validated())) {
+            if (!$token = JWTAuth::attempt($data)) {
                 return response()->json(['error' => 'Invalid credentials!'], 401);
             }
 

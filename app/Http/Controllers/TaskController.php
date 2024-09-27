@@ -27,9 +27,10 @@ class TaskController extends Controller
                 'message' => 'Not Permitted!'
             ], 401);
         }
-
         try {
-            return TaskResource::collection($project->tasks);
+            $task = Task::with(['subtasks'])->where('project_id', $project->id)->paginate(15);
+
+            return TaskResource::collection($task);
         } catch (\Throwable $e) {
             return response()->json([
                 'error'   => 'Could not fetch tasks',
@@ -40,6 +41,7 @@ class TaskController extends Controller
 
     public function store(Project $project, TaskRequest $request): TaskResource|JsonResponse
     {
+        $data = $request->validated();
         if ($project->user_id !== auth()->id()) {
             return response()->json([
                 'message' => 'Not Permitted!'
@@ -47,7 +49,7 @@ class TaskController extends Controller
         }
 
         try {
-            $task = $this->taskService->createTask($project, $request->validated());
+            $task = $this->taskService->createTask($project, $data);
 
             return new TaskResource($task);
         } catch (\Throwable $e) {
@@ -60,6 +62,7 @@ class TaskController extends Controller
 
     public function update(TaskRequest $request, Project $project, Task $task): TaskResource|JsonResponse
     {
+        $data = $request->validated();
         if ($project->user_id !== auth()->id()) {
             return response()->json([
                 'message' => 'Not Permitted!'
@@ -73,7 +76,7 @@ class TaskController extends Controller
         }
 
         try {
-            $task = $this->taskService->updateTask($task, $request->validated());
+            $task = $this->taskService->updateTask($task, $data);
 
             return new TaskResource($task);
         } catch (\Throwable $e) {

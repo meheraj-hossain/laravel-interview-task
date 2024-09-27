@@ -30,7 +30,9 @@ class SubTaskController extends Controller
         }
 
         try {
-            return SubTaskResource::collection($task->subtasks);
+            $subtask = $task->subtasks()->paginate(15);
+
+            return SubTaskResource::collection($subtask);
         } catch (Throwable $e) {
             return response()->json([
                 'message' => 'Could not fetch subtasks',
@@ -41,6 +43,7 @@ class SubTaskController extends Controller
 
     public function store(SubTaskRequest $request, Task $task): SubTaskResource|JsonResponse
     {
+        $data = $request->validated();
         if ($task->project->user_id !== auth()->id()) {
             return response()->json([
                 'message' => 'Not Permitted!'
@@ -48,7 +51,7 @@ class SubTaskController extends Controller
         }
 
         try {
-            $subtask = $this->subtaskService->createSubTask($task, $request->validated());
+            $subtask = $this->subtaskService->createSubTask($task, $data);
 
             return new SubTaskResource($subtask);
         } catch (Throwable $e) {
@@ -59,13 +62,9 @@ class SubTaskController extends Controller
         }
     }
 
-    public function show(string $id)
-    {
-        // Show logic can be added here
-    }
-
     public function update(SubTaskRequest $request, Task $task, SubTask $subtask): SubTaskResource|JsonResponse
     {
+        $data = $request->validated();
         if ($task->project->user_id !== auth()->id()) {
             return response()->json([
                 'message' => 'Not Permitted!'
@@ -79,7 +78,7 @@ class SubTaskController extends Controller
         }
 
         try {
-            $subtask = $this->subtaskService->updateSubTask($subtask, $request->validated());
+            $subtask = $this->subtaskService->updateSubTask($subtask, $data);
 
             return new SubTaskResource($subtask);
         } catch (Throwable $e) {

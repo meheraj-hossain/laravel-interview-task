@@ -9,16 +9,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class SubtaskFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     public function definition(): array
     {
         return [
-            'task_id' => rand(1, 300),
-            'name' => fake()->word(3, true)
+            'task_id' => rand(1, 3000),
+            'name'    => fake()->word(3, true)
         ];
     }
 }

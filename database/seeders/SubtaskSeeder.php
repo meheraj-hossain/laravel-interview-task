@@ -8,11 +8,8 @@ use App\Models\SubTask;
 
 class SubtaskSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        SubTask::factory(900)->create();
+        SubTask::factory(9000)->create();
     }
 }

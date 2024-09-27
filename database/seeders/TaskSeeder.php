@@ -8,11 +8,8 @@ use App\Models\Task;
 
 class TaskSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Task::factory(300)->create();
+        Task::factory(3000)->create();
     }
 }

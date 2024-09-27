@@ -22,7 +22,11 @@ class ProjectController extends Controller
     public function index(): AnonymousResourceCollection|JsonResponse
     {
         try {
-            $projects = Auth::user()->projects()->get();
+            $projects = Project::with([
+                'tasks' => function ($q) {
+                    return $q->with(['subtasks']);
+                }
+            ])->where('user_id', Auth::id())->paginate(15);
 
             return ProjectResource::collection($projects);
         } catch (\Throwable $e) {
@@ -35,8 +39,9 @@ class ProjectController extends Controller
 
     public function store(ProjectRequest $request): ProjectResource|JsonResponse
     {
+        $data = $request->validated();
         try {
-            $project = $this->projectService->createProject(Auth::user(), $request->validated());
+            $project = $this->projectService->createProject(Auth::user(), $data);
 
             return new ProjectResource($project);
         } catch (\Throwable $e) {
@@ -49,6 +54,7 @@ class ProjectController extends Controller
 
     public function update(ProjectRequest $request, Project $project): ProjectResource|JsonResponse
     {
+        $data = $request->validated();
         if ($project->user_id !== Auth::id()) {
             return response()->json([
                 'error' => 'Not Permitted!'
@@ -56,7 +62,7 @@ class ProjectController extends Controller
         }
 
         try {
-            $project = $this->projectService->updateProject($project, $request->validated());
+            $project = $this->projectService->updateProject($project, $data);
 
             return new ProjectResource($project);
         } catch (\Throwable $e) {
@@ -92,7 +98,11 @@ class ProjectController extends Controller
     public function report($projectId): JsonResponse
     {
         try {
-            $project = Project::with(['tasks.subtasks'])->findOrFail($projectId);
+            $project = Project::with([
+                'tasks' => function ($q) {
+                    return $q->with(['subtasks']);
+                }
+            ])->findOrFail($projectId);
 
             if ($project->user_id !== auth()->id()) {
                 return response()->json([

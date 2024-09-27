@@ -27,8 +27,8 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:api')
 
 Route::middleware(['auth:api', 'throttle:60,1'])->group(function () {
     Route::apiResource('projects', ProjectController::class);
-    Route::get('projects/{id}/report', [ProjectController::class, 'report']);
+    Route::get('projects/{id}/report', [ProjectController::class, 'report'])->name('projects.report');
     Route::apiResource('projects.tasks', TaskController::class);
-    Route::post('projects/{project}/tasks/upload', [TaskController::class, 'uploadTasks']);
+    Route::post('projects/{project}/tasks/upload', [TaskController::class, 'uploadTasks'])->name('projects.tasks.upload');
     Route::apiResource('tasks.subtasks', SubTaskController::class);
 });
