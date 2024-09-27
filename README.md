@@ -1,4 +1,6 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<H1 align="center">INTERVIEW TASK</H1>
+
 
 ## Setup Instructions
 
@@ -15,7 +17,7 @@ Follow these steps to set up the project locally:
 4. **Generate Application Key**
     ```bash
     php artisan key:generate
-5. **Generate JWT Secret**
+5. **Generate JWT Secret (JWT was implemented for authentication)**
     ```bash
     php artisan jwt:secret
 6. **Run Migration**
